@@ -2,8 +2,10 @@
 
 library(ggplot2)
 library(cowplot) # Need for combining ggplot2 output into one plot aesthetically
+library(data.table)
 
 # This function creates a boxplot, MDS plot, and parallel coordinate plot for five replications
+set.seed(10)
 makePlots <- function(A.1, A.2, A.3, A.4, A.5, i){
   dat <- data.frame(ID = paste0("ID", 1:50), A.1, A.2, A.3, A.4, A.5)
   datM <- melt(dat, id.vars = "ID")
@@ -55,3 +57,17 @@ plot_grid(boxPlots[[1]], mdsPlots[[1]], pcpPlots[[1]], labels=c("A", "B", "C"), 
 
 # View the second case
 plot_grid(boxPlots[[2]], mdsPlots[[2]], pcpPlots[[2]], labels=c("A", "B", "C"), ncol = 1, nrow = 3)
+
+A.1=sort(rnorm(50,10))
+A.2=sort(rnorm(50,10))
+A.3=sort(rnorm(50,10))
+A.4=sort(rnorm(50,10))
+A.5=sort(rnorm(50,10))
+
+A.1 <- c(sort(runif(50, 1, 3)), runif(50, 1, 3))
+A.2 <- c(sort(runif(50, 1, 3)), runif(50, 1, 3))
+B.1 <- c(sort(runif(50, 5, 10)), runif(50, 5, 10))
+B.1 <- c(sort(runif(50, 5, 10)), runif(50, 5, 10))
+
+dat <- data.frame(A.1, A.2,B.1, B.2)
+ggpairs(dat)
