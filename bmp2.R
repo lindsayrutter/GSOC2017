@@ -5,9 +5,8 @@ library(cowplot) # Need for combining ggplot2 output into one plot aesthetically
 library(data.table)
 
 # This function creates a boxplot, MDS plot, and parallel coordinate plot for five replications
-set.seed(10)
-makePlots <- function(A.1, A.2, A.3, A.4, A.5, i){
-  dat <- data.frame(ID = paste0("ID", 1:50), A.1, A.2, A.3, A.4, A.5)
+makePlots <- function(A.1, A.2, A.3, B.1, B.2, B.3, i){
+  dat <- data.frame(ID = paste0("ID", 1:50), A.1, A.2, A.3, B.1, B.2, B.3)
   datM <- melt(dat, id.vars = "ID")
   colnames(datM) <- c("ID", "Group", "Value")
 
@@ -24,7 +23,7 @@ makePlots <- function(A.1, A.2, A.3, A.4, A.5, i){
 
   pcpPlots[[i]] <<- ggplot(dat_long) + geom_line(aes(x = Group, y = Value, group = ID, color = ID)) + theme(legend.position="none", text = element_text(size=12))
 
-  tDat <- t(dat[,2:6])
+  tDat <- t(dat[,2:7]) #orig 2:6
   datD <- as.matrix(dist(tDat))
   fit <- cmdscale(datD, eig = TRUE, k = 2)
   x <- fit$points[, 1]
@@ -41,16 +40,18 @@ mdsPlots <- vector('list', 2)
 A.1=sort(rnorm(50,10))
 A.2=rev(sort(rnorm(50,10)))
 A.3=sort(rnorm(50,10))
-A.4=rev(sort(rnorm(50,10)))
-A.5=sort(rnorm(50,10))
+B.1=rev(sort(rnorm(50,5)))
+B.2=sort(rnorm(50,5))
+B.3=rev(sort(rnorm(50,5)))
 
-makePlots(A.1, A.2, A.3, A.4, A.5, 1)
+makePlots(A.1, A.2, A.3, B.1, B.2, B.3, 1)
 
 # In the second case, we purposely create individual observations that will be more consistent across their replications
 A.2=sort(rnorm(50,10))
-A.4=sort(rnorm(50,10))
+B.1=sort(rnorm(50,5))
+B.3=sort(rnorm(50,5))
 
-makePlots(A.1, A.2, A.3, A.4, A.5, 2)
+makePlots(A.1, A.2, A.3, B.1, B.2, B.3, 2)
 
 # View the first case
 plot_grid(boxPlots[[1]], mdsPlots[[1]], pcpPlots[[1]], labels=c("A", "B", "C"), ncol = 1, nrow = 3)
