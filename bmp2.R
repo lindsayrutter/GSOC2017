@@ -8,9 +8,9 @@ library(data.table)
 makePlots <- function(A.1, A.2, A.3, B.1, B.2, B.3, i){
   dat <- data.frame(ID = paste0("ID", 1:50), A.1, A.2, A.3, B.1, B.2, B.3)
   datM <- melt(dat, id.vars = "ID")
-  colnames(datM) <- c("ID", "Group", "Value")
+  colnames(datM) <- c("ID", "Sample", "Count")
 
-  boxPlots[[i]] <<- ggplot(datM, aes(Group, Value)) + geom_boxplot() + theme(text = element_text(size=12))
+  boxPlots[[i]] <<- ggplot(datM, aes(Sample, Count)) + geom_boxplot() + theme(text = element_text(size=12))
 
   # Convert DF from scatterplot to PCP
   datt <- data.frame(t(dat))
@@ -19,9 +19,9 @@ makePlots <- function(A.1, A.2, A.3, B.1, B.2, B.3, i){
   datt[] <- lapply(datt, function(x) type.convert(as.character(x)))
   setDT(datt, keep.rownames = TRUE)[]
   dat_long <- melt(datt, id.vars ="rn" )
-  colnames(dat_long) <- c("Group", "ID", "Value")
+  colnames(dat_long) <- c("Sample", "ID", "Count")
 
-  pcpPlots[[i]] <<- ggplot(dat_long) + geom_line(aes(x = Group, y = Value, group = ID, color = ID)) + theme(legend.position="none", text = element_text(size=12))
+  pcpPlots[[i]] <<- ggplot(dat_long) + geom_line(aes(x = Sample, y = Count, group = ID, color = ID)) + theme(legend.position="none", text = element_text(size=12))
 
   tDat <- t(dat[,2:7]) #orig 2:6
   datD <- as.matrix(dist(tDat))
@@ -31,7 +31,7 @@ makePlots <- function(A.1, A.2, A.3, B.1, B.2, B.3, i){
   mdsPlots[[i]] <<- qplot(x,y) + geom_text(label = names(x), nudge_y = 0.35) + labs(x = "Dim 1", y = "Dim 2") + theme(text = element_text(size=12))
 }
 
-set.seed(5)
+set.seed(15)
 boxPlots <- vector('list', 2)
 pcpPlots <- vector('list', 2)
 mdsPlots <- vector('list', 2)
@@ -59,16 +59,16 @@ plot_grid(boxPlots[[1]], mdsPlots[[1]], pcpPlots[[1]], labels=c("A", "B", "C"), 
 # View the second case
 plot_grid(boxPlots[[2]], mdsPlots[[2]], pcpPlots[[2]], labels=c("A", "B", "C"), ncol = 1, nrow = 3)
 
-A.1=sort(rnorm(50,10))
-A.2=sort(rnorm(50,10))
-A.3=sort(rnorm(50,10))
-A.4=sort(rnorm(50,10))
-A.5=sort(rnorm(50,10))
+# A.1=sort(rnorm(50,10))
+# A.2=sort(rnorm(50,10))
+# A.3=sort(rnorm(50,10))
+# A.4=sort(rnorm(50,10))
+# A.5=sort(rnorm(50,10))
+# 
+# A.1 <- c(sort(runif(50, 1, 3)), runif(50, 1, 3))
+# A.2 <- c(sort(runif(50, 1, 3)), runif(50, 1, 3))
+# B.1 <- c(sort(runif(50, 5, 10)), runif(50, 5, 10))
+# B.2 <- c(sort(runif(50, 5, 10)), runif(50, 5, 10))
 
-A.1 <- c(sort(runif(50, 1, 3)), runif(50, 1, 3))
-A.2 <- c(sort(runif(50, 1, 3)), runif(50, 1, 3))
-B.1 <- c(sort(runif(50, 5, 10)), runif(50, 5, 10))
-B.2 <- c(sort(runif(50, 5, 10)), runif(50, 5, 10))
-
-dat <- data.frame(A.1, A.2,B.1, B.2)
+dat <- data.frame(A.1, A.2, A.3, B.1, B.2, B.3)
 ggpairs(dat)
